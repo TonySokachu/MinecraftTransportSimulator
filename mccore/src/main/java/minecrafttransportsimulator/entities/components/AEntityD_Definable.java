@@ -175,7 +175,9 @@ public abstract class AEntityD_Definable<JSONDefinition extends AJSONMultiModelP
             initializeAnimations();
             animationsInitialized = true;
         }
-        spawnParticles(0);
+        if (world.isClient()) {
+            spawnParticles(0);
+        }
 
         //Only update radar once a second, and only if we requested it via variables.
         if (radarRequestCooldown > 0 && ticksExisted % 20 == 0) {
@@ -628,6 +630,9 @@ public abstract class AEntityD_Definable<JSONDefinition extends AJSONMultiModelP
                                 if (sound.pitch < 0) {
                                     sound.pitch = 0;
                                 }
+                            } else if (soundDef.looping) {
+                                //We should have a sound here but don't, flag ourselves as inactive to make a new one.
+                                activeSounds.remove(soundDef);
                             }
                         } else {
                             //Sound shouldn't play, remove from active.
